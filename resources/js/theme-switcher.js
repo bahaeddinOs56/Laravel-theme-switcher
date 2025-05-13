@@ -1,0 +1,33 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const storedTheme = localStorage.getItem('selectedTheme');
+    if (storedTheme) {
+        setTheme(storedTheme);
+    }
+
+    const themePreviews = document.querySelectorAll('[onclick^="setTheme"]');
+    themePreviews.forEach(preview => {
+        preview.addEventListener('click', function() {
+            const themeName = this.getAttribute('onclick').match(/'([^']+)'/)[1];
+            setTheme(themeName);
+        });
+    });
+});
+
+function setTheme(themeName) {
+    const themes = {
+        'sunset': ['#ffb5a7', '#fcd5ce', '#f8edeb', '#f9dcc4'],
+        'forest': ['#355c4a', '#6b9080', '#a4c3b2', '#cce3de'],
+        'ocean': ['#56cfe1', '#72efdd', '#80ffdb', '#5390d9'],
+        'pastel': ['#ffd6e0', '#f6dfeb', '#dbe6e4', '#b8e0d2'],
+        'midnight': ['#22223b', '#4a4e69', '#9a8c98', '#c9ada7']
+    };
+
+    const colors = themes[themeName];
+    if (colors) {
+        document.documentElement.style.setProperty('--theme-color-1', colors[0]);
+        document.documentElement.style.setProperty('--theme-color-2', colors[1]);
+        document.documentElement.style.setProperty('--theme-color-3', colors[2]);
+        document.documentElement.style.setProperty('--theme-color-4', colors[3]);
+        localStorage.setItem('selectedTheme', themeName);
+    }
+} 
