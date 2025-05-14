@@ -15,44 +15,53 @@
 
 <!-- Theme Switcher Panel -->
 <div class="theme-switcher-panel" id="themePanel">
-    <div class="theme-panel-header">
-        <h3 class="theme-title">Theme Settings</h3>
-        <button class="theme-close-button" onclick="toggleThemePanel()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-    </div>
-
+    <h3 class="theme-title">Choose Theme</h3>
     <div class="theme-options">
-        @foreach(config('theme-palettes.themes') as $key => $theme)
-            <div class="theme-option" onclick="setTheme('{{ $key }}')">
-                <div class="theme-preview">
-                    <div class="theme-preview-main" style="background-color: {{ $theme['colors']['primary'] }}"></div>
-                    <div class="theme-preview-colors">
-                        <div class="theme-preview-color" style="background-color: {{ $theme['colors']['accent'] }}"></div>
-                        <div class="theme-preview-color" style="background-color: {{ $theme['colors']['success'] }}"></div>
-                        <div class="theme-preview-color" style="background-color: {{ $theme['colors']['warning'] }}"></div>
-                        <div class="theme-preview-color" style="background-color: {{ $theme['colors']['error'] }}"></div>
-                    </div>
-                </div>
-                <div class="theme-info">
-                    <span class="theme-name">{{ $theme['name'] }}</span>
-                    <div class="theme-colors">
-                        <span class="theme-color-dot" style="background-color: {{ $theme['colors']['primary'] }}"></span>
-                        <span class="theme-color-dot" style="background-color: {{ $theme['colors']['secondary'] }}"></span>
-                        <span class="theme-color-dot" style="background-color: {{ $theme['colors']['accent'] }}"></span>
-                    </div>
-                </div>
+        <div class="theme-option" onclick="setTheme('sunset')">
+            <div class="theme-preview">
+                <div class="theme-preview-color" style="background-color: #ffb5a7"></div>
+                <div class="theme-preview-color" style="background-color: #fcd5ce"></div>
+                <div class="theme-preview-color" style="background-color: #f8edeb"></div>
+                <div class="theme-preview-color" style="background-color: #f9dcc4"></div>
             </div>
-        @endforeach
-    </div>
-
-    <div class="theme-panel-footer">
-        <button class="theme-reset-button" onclick="resetTheme()">
-            Reset to Default
-        </button>
+            <span>Sunset</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('forest')">
+            <div class="theme-preview">
+                <div class="theme-preview-color" style="background-color: #355c4a"></div>
+                <div class="theme-preview-color" style="background-color: #6b9080"></div>
+                <div class="theme-preview-color" style="background-color: #a4c3b2"></div>
+                <div class="theme-preview-color" style="background-color: #cce3de"></div>
+            </div>
+            <span>Forest</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('ocean')">
+            <div class="theme-preview">
+                <div class="theme-preview-color" style="background-color: #56cfe1"></div>
+                <div class="theme-preview-color" style="background-color: #72efdd"></div>
+                <div class="theme-preview-color" style="background-color: #80ffdb"></div>
+                <div class="theme-preview-color" style="background-color: #5390d9"></div>
+            </div>
+            <span>Ocean</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('pastel')">
+            <div class="theme-preview">
+                <div class="theme-preview-color" style="background-color: #ffd6e0"></div>
+                <div class="theme-preview-color" style="background-color: #f6dfeb"></div>
+                <div class="theme-preview-color" style="background-color: #dbe6e4"></div>
+                <div class="theme-preview-color" style="background-color: #b8e0d2"></div>
+            </div>
+            <span>Pastel</span>
+        </div>
+        <div class="theme-option" onclick="setTheme('midnight')">
+            <div class="theme-preview">
+                <div class="theme-preview-color" style="background-color: #22223b"></div>
+                <div class="theme-preview-color" style="background-color: #4a4e69"></div>
+                <div class="theme-preview-color" style="background-color: #9a8c98"></div>
+                <div class="theme-preview-color" style="background-color: #c9ada7"></div>
+            </div>
+            <span>Midnight</span>
+        </div>
     </div>
 </div>
 
@@ -60,11 +69,6 @@
 function toggleThemePanel() {
     const panel = document.getElementById('themePanel');
     panel.classList.toggle('active');
-}
-
-function resetTheme() {
-    localStorage.removeItem('selectedTheme');
-    setTheme('light');
 }
 
 // Close panel when clicking outside
