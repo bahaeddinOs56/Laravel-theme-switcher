@@ -63,6 +63,12 @@ class ThemeSwitcherServiceProvider extends ServiceProvider
             // Theme Export/Import Routes
             Route::get('/export/{themeKey}', 'ThemeCustomizerController@export')->name('theme-switcher.export');
             Route::post('/import', 'ThemeCustomizerController@import')->name('theme-switcher.import');
+            
+            // Theme Analytics Routes
+            Route::get('/analytics', 'ThemeAnalyticsController@show')->name('theme-switcher.analytics');
+            Route::get('/analytics/stats/{themeKey}', 'ThemeAnalyticsController@getThemeStats')->name('theme-switcher.analytics.stats');
+            Route::get('/analytics/trends/{themeKey}', 'ThemeAnalyticsController@getThemeTrends')->name('theme-switcher.analytics.trends');
+            Route::post('/analytics/track', 'ThemeAnalyticsController@trackSwitch')->name('theme-switcher.analytics.track');
         });
     }
 } 
