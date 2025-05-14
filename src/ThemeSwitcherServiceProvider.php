@@ -3,15 +3,12 @@
 namespace Bahae\LaravelThemeSwitcher;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class ThemeSwitcherServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/theme-palettes.php', 'theme-palettes'
-        );
-
         $this->mergeConfigFrom(
             __DIR__.'/../config/themes.php', 'themes'
         );
@@ -23,21 +20,39 @@ class ThemeSwitcherServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'theme-switcher');
-
+        // Publish config
         $this->publishes([
-            __DIR__.'/../config/theme-palettes.php' => config_path('theme-palettes.php'),
             __DIR__.'/../config/themes.php' => config_path('themes.php'),
-            __DIR__.'/../resources/views' => resource_path('views/vendor/theme-switcher'),
-            __DIR__.'/../resources/js/theme-switcher.js' => public_path('js/theme-switcher.js'),
-            __DIR__.'/../resources/css/theme-switcher.css' => public_path('css/theme-switcher.css'),
+        ], 'theme-switcher-config');
+
+        // Publish assets
+        $this->publishes([
+            __DIR__.'/../resources/css' => public_path('css'),
+            __DIR__.'/../resources/js' => public_path('js'),
         ], 'theme-switcher');
 
-        // Create database migration for user preferences if using database storage
-        if (config('themes.storage') === 'database') {
-            $this->publishes([
-                __DIR__.'/../database/migrations/create_user_preferences_table.php' => database_path('migrations/'.date('Y_m_d_His').'_create_user_preferences_table.php'),
-            ], 'theme-switcher-migrations');
-        }
+        // Publish migrations
+        $this->publishes([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'theme-switcher-migrations');
+
+        // Load views
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'theme-switcher');
+
+        // Register routes
+        $this->registerRoutes();
+    }
+
+    protected function registerRoutes()
+    {
+        Route::group([
+            'prefix' => 'theme-switcher',
+            'middleware' => ['web'],
+            'namespace' => 'Bahae\LaravelThemeSwitcher',
+        ], function () {
+            Route::get('/preview', 'ThemePreviewController@show')->name('theme-switcher.preview');
+            Route::post('/preview', 'ThemePreviewController@preview')->name('theme-switcher.preview.theme');
+            Route::post('/apply', 'ThemePreviewController@apply')->name('theme-switcher.apply');
+        });
     }
 } 
