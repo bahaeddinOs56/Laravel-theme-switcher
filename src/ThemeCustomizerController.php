@@ -143,4 +143,94 @@ class ThemeCustomizerController extends Controller
             ], 400);
         }
     }
+
+    /**
+     * Export a theme as a JSON file
+     *
+     * @param string $themeKey
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export(string $themeKey)
+    {
+        try {
+            $themes = config('themes.themes', []);
+            
+            if (!isset($themes[$themeKey])) {
+                return response()->json([
+                    'error' => 'Theme not found'
+                ], 404);
+            }
+
+            $theme = $themes[$themeKey];
+            $theme['key'] = $themeKey;
+            
+            // Create a temporary file
+            $tempFile = tempnam(sys_get_temp_dir(), 'theme_');
+            file_put_contents($tempFile, json_encode($theme, JSON_PRETTY_PRINT));
+
+            return response()->download(
+                $tempFile,
+                "theme-{$themeKey}.json",
+                ['Content-Type' => 'application/json']
+            )->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    /**
+     * Import a theme from a JSON file
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'theme_file' => 'required|file|mimes:json|max:1024'
+        ]);
+
+        try {
+            $themeData = json_decode(file_get_contents($request->file('theme_file')->path()), true);
+            
+            if (!isset($themeData['key']) || !isset($themeData['colors'])) {
+                throw new \Exception('Invalid theme file format');
+            }
+
+            // Generate a unique key for the imported theme
+            $themeKey = 'imported_' . strtolower(str_replace(' ', '_', $themeData['key']));
+            
+            // Add the theme to the configuration
+            $themes = config('themes.themes', []);
+            $themes[$themeKey] = [
+                'name' => $themeData['name'] ?? 'Imported Theme',
+                'description' => $themeData['description'] ?? 'Imported theme',
+                'colors' => $themeData['colors'],
+                'typography' => $themeData['typography'] ?? [],
+                'shadows' => $themeData['shadows'] ?? [],
+                'borders' => $themeData['borders'] ?? []
+            ];
+
+            // Save the updated configuration
+            $this->saveThemeConfig($themes);
+
+            // Generate CSS variables for the new theme
+            $css = $this->theme->generateCssVariables($themeKey);
+
+            // Save the CSS to a file
+            $this->saveThemeCss($themeKey, $css);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Theme imported successfully',
+                'theme' => $themeKey
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
 } 

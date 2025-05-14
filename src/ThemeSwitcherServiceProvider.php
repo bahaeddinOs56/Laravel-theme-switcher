@@ -59,6 +59,10 @@ class ThemeSwitcherServiceProvider extends ServiceProvider
             Route::get('/customize', 'ThemeCustomizerController@show')->name('theme-switcher.customize');
             Route::post('/save-custom', 'ThemeCustomizerController@save')->name('theme-switcher.save-custom');
             Route::delete('/delete-custom/{themeKey}', 'ThemeCustomizerController@delete')->name('theme-switcher.delete-custom');
+            
+            // Theme Export/Import Routes
+            Route::get('/export/{themeKey}', 'ThemeCustomizerController@export')->name('theme-switcher.export');
+            Route::post('/import', 'ThemeCustomizerController@import')->name('theme-switcher.import');
         });
     }
 } 

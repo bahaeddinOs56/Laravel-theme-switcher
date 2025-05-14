@@ -81,6 +81,17 @@
             <div class="customizer-actions">
                 <button class="btn-primary save-theme">Save Theme</button>
                 <button class="btn-secondary reset-theme">Reset to Default</button>
+                <div class="theme-import-export">
+                    <button class="btn-secondary export-theme" data-theme-key="{{ $themeKey ?? 'default' }}">Export Theme</button>
+                    <form class="import-theme-form" enctype="multipart/form-data">
+                        <input type="file" 
+                               name="theme_file" 
+                               accept=".json" 
+                               class="theme-file-input" 
+                               style="display: none;">
+                        <button type="button" class="btn-secondary import-theme">Import Theme</button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -329,6 +340,16 @@ input[type="range"] {
     background: var(--theme-primary);
     color: white;
 }
+
+.theme-import-export {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.import-theme-form {
+    display: inline-block;
+}
 </style>
 
 <script>
@@ -444,9 +465,17 @@ class ThemeCustomizer {
     initializeActionButtons() {
         const saveButton = document.querySelector('.save-theme');
         const resetButton = document.querySelector('.reset-theme');
+        const exportButton = document.querySelector('.export-theme');
+        const importButton = document.querySelector('.import-theme');
+        const importForm = document.querySelector('.import-theme-form');
+        const fileInput = document.querySelector('.theme-file-input');
 
         saveButton.addEventListener('click', () => this.saveTheme());
         resetButton.addEventListener('click', () => this.resetTheme());
+        
+        exportButton.addEventListener('click', () => this.exportTheme());
+        importButton.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', () => this.importTheme());
     }
 
     updateColor(key, value) {
@@ -565,6 +594,48 @@ class ThemeCustomizer {
             notification.style.animation = 'slideOut 0.3s ease-in';
             setTimeout(() => notification.remove(), 300);
         }, 3000);
+    }
+
+    async exportTheme() {
+        const themeKey = document.querySelector('.export-theme').dataset.themeKey;
+        try {
+            window.location.href = `/theme-switcher/export/${themeKey}`;
+        } catch (error) {
+            console.error('Error exporting theme:', error);
+            this.showNotification('Failed to export theme', 'error');
+        }
+    }
+
+    async importTheme() {
+        const fileInput = document.querySelector('.theme-file-input');
+        if (!fileInput.files.length) return;
+
+        const formData = new FormData();
+        formData.append('theme_file', fileInput.files[0]);
+
+        try {
+            const response = await fetch('/theme-switcher/import', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Failed to import theme');
+
+            const data = await response.json();
+            this.showNotification('Theme imported successfully!', 'success');
+            
+            // Reset file input
+            fileInput.value = '';
+            
+            // Reload the page to show the new theme
+            window.location.reload();
+        } catch (error) {
+            console.error('Error importing theme:', error);
+            this.showNotification('Failed to import theme', 'error');
+        }
     }
 }
 </script> 
