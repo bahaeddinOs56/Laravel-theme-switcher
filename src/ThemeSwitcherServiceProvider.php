@@ -50,9 +50,15 @@ class ThemeSwitcherServiceProvider extends ServiceProvider
             'middleware' => ['web'],
             'namespace' => 'Bahae\LaravelThemeSwitcher',
         ], function () {
+            // Theme Preview Routes
             Route::get('/preview', 'ThemePreviewController@show')->name('theme-switcher.preview');
             Route::post('/preview', 'ThemePreviewController@preview')->name('theme-switcher.preview.theme');
             Route::post('/apply', 'ThemePreviewController@apply')->name('theme-switcher.apply');
+
+            // Theme Customizer Routes
+            Route::get('/customize', 'ThemeCustomizerController@show')->name('theme-switcher.customize');
+            Route::post('/save-custom', 'ThemeCustomizerController@save')->name('theme-switcher.save-custom');
+            Route::delete('/delete-custom/{themeKey}', 'ThemeCustomizerController@delete')->name('theme-switcher.delete-custom');
         });
     }
 } 
