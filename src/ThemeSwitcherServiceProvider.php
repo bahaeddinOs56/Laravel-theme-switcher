@@ -69,6 +69,12 @@ class ThemeSwitcherServiceProvider extends ServiceProvider
             Route::get('/analytics/stats/{themeKey}', 'ThemeAnalyticsController@getThemeStats')->name('theme-switcher.analytics.stats');
             Route::get('/analytics/trends/{themeKey}', 'ThemeAnalyticsController@getThemeTrends')->name('theme-switcher.analytics.trends');
             Route::post('/analytics/track', 'ThemeAnalyticsController@trackSwitch')->name('theme-switcher.analytics.track');
+
+            // Theme Preset Routes
+            Route::get('/presets', 'ThemePresetController@show')->name('theme-switcher.presets');
+            Route::post('/presets/save', 'ThemePresetController@save')->name('theme-switcher.presets.save');
+            Route::post('/presets/apply/{id}', 'ThemePresetController@apply')->name('theme-switcher.presets.apply');
+            Route::delete('/presets/delete/{id}', 'ThemePresetController@delete')->name('theme-switcher.presets.delete');
         });
     }
 } 
