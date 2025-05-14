@@ -1,0 +1,23 @@
+:root {
+    --theme-primary: #ffb5a7;
+    --theme-secondary: #fcd5ce;
+    --theme-accent: #f8edeb;
+    --theme-background: #f9dcc4;
+}
+
+.theme-sidebar {
+    background: linear-gradient(to bottom, var(--theme-primary), var(--theme-secondary));
+}
+
+.theme-button {
+    background-color: var(--theme-accent);
+    color: var(--theme-background);
+}
+
+.theme-button:hover {
+    background-color: var(--theme-primary);
+}
+
+.theme-background {
+    background-color: var(--theme-background);
+} 
