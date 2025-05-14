@@ -15,20 +15,13 @@ class ThemeSwitcherServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        // Publish config file
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'theme-switcher');
+
         $this->publishes([
             __DIR__.'/../config/theme-palettes.php' => config_path('theme-palettes.php'),
-        ], 'config');
-
-        // Publish views
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'theme-switcher');
-        $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/theme-switcher'),
-        ], 'views');
-
-        // Publish assets
-        $this->publishes([
-            __DIR__.'/../resources/js' => public_path('js'),
-        ], 'assets');
+            __DIR__.'/../resources/js/theme-switcher.js' => public_path('js/theme-switcher.js'),
+            __DIR__.'/../resources/css/theme-switcher.css' => public_path('css/theme-switcher.css'),
+        ], 'theme-switcher');
     }
 } 

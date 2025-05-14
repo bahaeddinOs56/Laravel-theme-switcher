@@ -31,12 +31,12 @@ function setTheme(themeName) {
         document.documentElement.style.setProperty('--theme-background', colors[3]); // Background
 
         // Apply colors to specific elements
-        const sidebar = document.querySelector('.bg-gradient-to-b');
+        const sidebar = document.querySelector('.theme-sidebar');
         if (sidebar) {
             sidebar.style.background = `linear-gradient(to bottom, ${colors[0]}, ${colors[1]})`;
         }
 
-        const buttons = document.querySelectorAll('a.flex.items-center');
+        const buttons = document.querySelectorAll('.theme-button');
         buttons.forEach(button => {
             button.style.backgroundColor = colors[2];
             button.style.color = colors[3];
