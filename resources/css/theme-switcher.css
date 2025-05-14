@@ -3,21 +3,139 @@
     --theme-secondary: #fcd5ce;
     --theme-accent: #f8edeb;
     --theme-background: #f9dcc4;
+    --theme-text: #2d3748;
+    --theme-text-light: #4a5568;
+    --theme-border: rgba(0, 0, 0, 0.1);
+    --theme-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Theme Switcher Button */
+.theme-switcher-button {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--theme-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--theme-shadow);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-switcher-button:hover {
+    transform: scale(1.1);
+    background: var(--theme-secondary);
+}
+
+/* Theme Switcher Panel */
+.theme-switcher-panel {
+    position: fixed;
+    bottom: 6rem;
+    right: 2rem;
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--theme-shadow);
+    z-index: 999;
+    display: none;
+    min-width: 250px;
+}
+
+.theme-switcher-panel.active {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+/* Theme Options */
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.theme-option {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid var(--theme-border);
+}
+
+.theme-option:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--theme-shadow);
+}
+
+.theme-option.active {
+    border-color: var(--theme-primary);
+}
+
+/* Theme Elements */
 .theme-sidebar {
-    background: linear-gradient(to bottom, var(--theme-primary), var(--theme-secondary));
+    background: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+    color: white;
+    box-shadow: var(--theme-shadow);
 }
 
 .theme-button {
     background-color: var(--theme-accent);
-    color: var(--theme-background);
+    color: var(--theme-text);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: var(--theme-shadow);
 }
 
 .theme-button:hover {
     background-color: var(--theme-primary);
+    color: white;
+    transform: translateY(-1px);
 }
 
 .theme-background {
     background-color: var(--theme-background);
+    color: var(--theme-text);
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Theme Preview */
+.theme-preview {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.theme-preview-color {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Theme Title */
+.theme-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--theme-text);
+    margin-bottom: 1rem;
 } 

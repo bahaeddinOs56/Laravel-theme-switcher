@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded', function() {
         setTheme(storedTheme);
     }
 
-    const themePreviews = document.querySelectorAll('[onclick^="setTheme"]');
-    themePreviews.forEach(preview => {
-        preview.addEventListener('click', function() {
-            const themeName = this.getAttribute('onclick').match(/'([^']+)'/)[1];
-            setTheme(themeName);
-        });
+    // Add active class to current theme
+    const themeOptions = document.querySelectorAll('.theme-option');
+    themeOptions.forEach(option => {
+        const themeName = option.getAttribute('onclick').match(/'([^']+)'/)[1];
+        if (themeName === storedTheme) {
+            option.classList.add('active');
+        }
     });
 });
 
@@ -30,19 +31,21 @@ function setTheme(themeName) {
         document.documentElement.style.setProperty('--theme-accent', colors[2]);     // Midtone
         document.documentElement.style.setProperty('--theme-background', colors[3]); // Background
 
-        // Apply colors to specific elements
-        const sidebar = document.querySelector('.bg-gradient-to-b');
-        if (sidebar) {
-            sidebar.style.background = `linear-gradient(to bottom, ${colors[0]}, ${colors[1]})`;
-        }
-
-        const buttons = document.querySelectorAll('a.flex.items-center');
-        buttons.forEach(button => {
-            button.style.backgroundColor = colors[2];
-            button.style.color = colors[3];
+        // Update active theme in UI
+        const themeOptions = document.querySelectorAll('.theme-option');
+        themeOptions.forEach(option => {
+            option.classList.remove('active');
+            const optionTheme = option.getAttribute('onclick').match(/'([^']+)'/)[1];
+            if (optionTheme === themeName) {
+                option.classList.add('active');
+            }
         });
 
-        document.body.style.backgroundColor = colors[3];
+        // Close the theme panel
+        const panel = document.getElementById('themePanel');
+        if (panel) {
+            panel.classList.remove('active');
+        }
 
         localStorage.setItem('selectedTheme', themeName);
     }
