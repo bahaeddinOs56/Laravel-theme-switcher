@@ -1,167 +1,253 @@
 # Laravel Theme Switcher
 
-A powerful theme switcher package for Laravel applications that provides beautiful, customizable themes with advanced features like theme persistence, special effects, and responsive design.
+A powerful and flexible theme management system for Laravel applications. This package provides a complete solution for managing themes, including theme switching, customization, presets, and analytics.
 
 ## Features
 
-- 🎨 Three premium themes (Modern Dark, Minimal Light, Ocean Breeze)
-- 🌊 Special effects (glass morphism, wave animations)
-- 💾 Multiple storage options (session, cookie, database)
-- 🎯 Enhanced component styling
+- 🎨 Multiple theme support
+- 🎯 Theme preview functionality
+- 🛠️ Theme customization interface
+- 💾 Theme presets management
+- 📊 Theme usage analytics
+- 🔄 Theme export/import
+- 🌙 Dark/Light mode support
 - 📱 Responsive design
-- ♿ Accessibility improvements
-- 🔄 Smooth transitions and animations
-- 🎭 Customizable color schemes
-- 📦 Easy installation and configuration
+- 🎯 Premium themes support
 
 ## Installation
 
-You can install the package via composer:
+```bash
+composer require bahaeddin/laravel-theme-switcher
+```
+
+Publish the configuration and assets:
 
 ```bash
-composer require bahae/laravel-theme-switcher
+php artisan vendor:publish --tag=theme-switcher-config
+php artisan vendor:publish --tag=theme-switcher
+php artisan vendor:publish --tag=theme-switcher-migrations
+```
+
+Run the migrations:
+
+```bash
+php artisan migrate
 ```
 
 ## Configuration
 
-1. Publish the package assets:
-
-```bash
-php artisan vendor:publish --tag=theme-switcher
-```
-
-2. If you want to use database storage for theme persistence, publish and run the migrations:
-
-```bash
-php artisan vendor:publish --tag=theme-switcher-migrations
-php artisan migrate
-```
-
-3. Configure the theme storage in `config/themes.php`:
+The package configuration file (`config/themes.php`) allows you to customize various aspects of the theme system:
 
 ```php
-'storage' => 'session', // Options: 'session', 'cookie', 'database'
+return [
+    'default_theme' => 'light',
+    'themes' => [
+        'light' => [
+            'name' => 'Light Theme',
+            'colors' => [
+                'primary' => '#007bff',
+                'secondary' => '#6c757d',
+                // ... other colors
+            ],
+            // ... other settings
+        ],
+        'dark' => [
+            'name' => 'Dark Theme',
+            'colors' => [
+                'primary' => '#0d6efd',
+                'secondary' => '#adb5bd',
+                // ... other colors
+            ],
+            // ... other settings
+        ],
+    ],
+];
 ```
 
 ## Usage
 
-1. Include the theme assets in your layout:
+### Basic Theme Switching
 
 ```php
-<!-- In your layout file -->
-<link href="{{ asset('css/theme-switcher.css') }}" rel="stylesheet">
-<script src="{{ asset('js/theme-switcher.js') }}" defer></script>
+use Bahae\LaravelThemeSwitcher\Theme;
 
-<!-- Add the theme switcher component -->
-@include('vendor.theme-switcher.switcher')
+// Switch to a theme
+Theme::setTheme('dark');
+
+// Get current theme
+$currentTheme = Theme::getCurrentTheme();
+
+// Get theme settings
+$settings = Theme::getCurrentSettings();
 ```
 
-2. Use the theme classes in your HTML:
+### Theme Preview
 
-```html
-<!-- Basic Components -->
-<div class="card">
-    <h2 class="text-primary">Title</h2>
-    <p class="text-secondary">Content</p>
-    <button class="btn-primary">Primary Action</button>
-    <button class="btn-secondary">Secondary Action</button>
-</div>
+Visit `/theme-switcher/preview` to see the theme preview interface. This allows users to:
 
-<!-- Surface Elements -->
-<div class="surface">
-    <!-- Content with hover effect -->
-</div>
+- Preview themes before applying
+- See live changes
+- Compare different themes
+- Apply themes with one click
 
-<!-- Status Indicators -->
-<span class="status-success">Success message</span>
-<span class="status-warning">Warning message</span>
-<span class="status-error">Error message</span>
+### Theme Customization
 
-<!-- Ocean Theme Special Effects -->
-<div class="card glass-effect">
-    <div class="wave-animation">
-        <!-- Content with wave effect -->
-    </div>
-</div>
-```
+Visit `/theme-switcher/customize` to access the theme customizer. Features include:
 
-## Available Themes
+- Color picker for theme colors
+- Typography settings
+- Shadow and border controls
+- Live preview
+- Save custom themes
 
-### Modern Dark Theme
-- Dark background with proper contrast
-- Accent colors with hover states
-- Enhanced shadow effects
-- Proper text hierarchy
+### Theme Presets
 
-### Minimal Light Theme
-- Clean, minimal design
-- Subtle shadows and borders
-- Proper spacing and typography
-- Smooth transitions
+Visit `/theme-switcher/presets` to manage theme presets. Features include:
 
-### Ocean Breeze Theme
-- Gradient background
-- Glass effect components
-- Wave animation
-- Water-inspired color scheme
-
-## Theme Customization
-
-You can customize themes by editing the `config/themes.php` file. Each theme supports:
-
-- Colors (background, surface, primary, secondary, text)
-- Shadows (small, medium, large)
-- Typography (font family, size, line height)
-- Border radius (small, medium, large)
-- Special effects (glass effect, wave animation)
-
-Example configuration:
+- Save current theme configuration as a preset
+- Apply saved presets
+- Manage public and private presets
+- Delete custom presets
 
 ```php
-'themes' => [
-    'custom' => [
-        'name' => 'Custom Theme',
-        'description' => 'My custom theme',
-        'colors' => [
-            'background' => '#ffffff',
-            'surface' => '#f3f4f6',
-            'primary' => '#3b82f6',
-            // ... more colors
-        ],
-        'shadows' => [
-            'small' => '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-            // ... more shadows
-        ],
-        // ... more properties
-    ],
-],
+use Bahae\LaravelThemeSwitcher\ThemePreset;
+
+// Create a preset from current theme
+ThemePreset::createFromCurrent(
+    'My Preset',
+    'A custom theme configuration',
+    true, // is public
+    Auth::id() // user ID
+);
+
+// Get public presets
+$publicPresets = ThemePreset::getPublicPresets('light');
+
+// Get user presets
+$userPresets = ThemePreset::getUserPresets('light', Auth::id());
 ```
 
-## Theme Persistence
+### Theme Analytics
 
-The package supports three storage options:
+Visit `/theme-switcher/analytics` to view theme usage statistics. Features include:
 
-1. **Session Storage** (default)
-   - Theme preference persists during the session
-   - No database required
+- Theme switch tracking
+- Usage statistics
+- Trend analysis
+- User preferences
 
-2. **Cookie Storage**
-   - Theme preference persists for 30 days
-   - No database required
+```php
+use Bahae\LaravelThemeSwitcher\ThemeAnalytics;
 
-3. **Database Storage**
-   - Theme preference persists per user
-   - Requires running migrations
-   - Supports custom colors per user
+// Track a theme switch
+ThemeAnalytics::trackSwitch('dark');
+
+// Get theme statistics
+$stats = ThemeAnalytics::getThemeStats('dark');
+
+// Get theme trends
+$trends = ThemeAnalytics::getThemeTrends('dark');
+```
+
+### Export/Import Themes
+
+```php
+use Bahae\LaravelThemeSwitcher\Theme;
+
+// Export a theme
+$themeData = Theme::exportTheme('dark');
+
+// Import a theme
+Theme::importTheme($themeData);
+```
+
+## Blade Components
+
+The package includes several Blade components for easy integration:
+
+```blade
+{{-- Theme Switcher --}}
+<x-theme-switcher::switcher />
+
+{{-- Theme Preview --}}
+<x-theme-switcher::preview />
+
+{{-- Theme Customizer --}}
+<x-theme-switcher::customizer />
+
+{{-- Theme Analytics --}}
+<x-theme-switcher::analytics />
+```
+
+## JavaScript API
+
+The package provides a JavaScript API for theme management:
+
+```javascript
+// Initialize theme switcher
+const themeSwitcher = new ThemeSwitcher();
+themeSwitcher.init();
+
+// Switch theme
+themeSwitcher.switchTheme('dark');
+
+// Get current theme
+const currentTheme = themeSwitcher.getCurrentTheme();
+
+// Save preset
+themeSwitcher.savePreset({
+    name: 'My Preset',
+    description: 'A custom theme',
+    isPublic: true
+});
+```
+
+## Events
+
+The package fires several events that you can listen to:
+
+```php
+// Theme switched
+ThemeSwitched::class
+
+// Theme customized
+ThemeCustomized::class
+
+// Preset created
+PresetCreated::class
+
+// Preset applied
+PresetApplied::class
+```
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-## Security
-
-If you discover any security-related issues, please email [your-email@example.com](mailto:your-email@example.com) instead of using the issue tracker.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+This package is open-sourced software licensed under the [MIT license](LICENSE.md).
+
+## Support
+
+For support, please open an issue on GitHub or contact the maintainers.
+
+## Changelog
+
+### v1.8.0
+- Added theme presets functionality
+- Added theme analytics
+- Enhanced theme customization
+- Improved UI/UX
+
+### v1.7.0
+- Added theme preview
+- Added theme customization
+- Enhanced theme switching
+
+### v1.6.0
+- Added premium themes
+- Enhanced theme system
+- Improved performance
+
+[View full changelog](CHANGELOG.md)
